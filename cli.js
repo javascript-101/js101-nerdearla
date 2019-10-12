@@ -1,18 +1,3 @@
-/*
-1. Inicializemos nuestro proyecto con npm init -y
-2. Agreguemos como dependencia a axios para poder hacer un request GET
-   y obtener la página de Nerdearla.
-3. Agreguemos como dependencia cheerio con npm install cheerio
-   Que nos permitirá obtener elementos con una API similar a jQuery.
-4. Agreguemos como dependencia de desarrollador a nodemon, npm install -D nodemon
-   Para estar escuchando cambios en nuestro JS y volver a ejecutar Node.js sobre el mismo
-5. Hagamos require de axios y cheerio
-6. Creemos una función main para correr nuestra cli principal
-7. Vamos a hacer un GET con axios para obtener el HTML de la agenda de nerdearla que vive en https://nerdear.la/agenda/
-8. Ahora que ya tenemos el HTML debemos cargarlo a cheerio, usando el método .load()
-9.
-   */
-
 const axios = require('axios')
 const cheerio = require('cheerio')
 const ora = require('ora')
@@ -149,6 +134,29 @@ const main = async () => {
 main()
 
 /*
+1. Inicializemos nuestro proyecto con npm init -y
+2. Agreguemos como dependencia a axios para poder hacer un request GET
+   y obtener la página de Nerdearla.
+3. Agreguemos como dependencia cheerio con npm install cheerio
+   Que nos permitirá obtener elementos con una API similar a jQuery.
+4. Agreguemos como dependencia de desarrollador a nodemon, npm install -D nodemon
+   Para estar escuchando cambios en nuestro JS y volver a ejecutar Node.js sobre el mismo
+5. Hagamos require de axios y cheerio
+6. Creemos una función main para correr nuestra cli principal
+7. Vamos a hacer un GET con axios para obtener el HTML de la agenda de nerdearla que vive en https://nerdear.la/agenda/
+8. Ahora que ya tenemos el HTML debemos cargarlo a cheerio, usando el método .load()
+9.
+*/
+
+/*
+
+1. Falta agregar una opción UI para correr enquirer
+2. Falta
+3. Falta integración con gmail (con alguna lib)
+3. Falta poder publicarlo en npm (con np)
+
+
+----
 
 Otras libs: js-fire pkg
 
