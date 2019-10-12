@@ -13,54 +13,140 @@
 9.
    */
 
-const axios = require('axios');
-const cheerio = require('cheerio');
+const axios = require('axios')
+const cheerio = require('cheerio')
+const ora = require('ora')
+const fire = require('js-fire')
+const boxen = require('boxen')
+
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+const DAYS = {
+  'Día 1': 'one',
+  'Día 2': 'two',
+  'Día 3': 'three',
+}
+
+const ROOM_NAMES = {
+  'Auditorio Cognizant/Despegar': 'cognizantRoom',
+  'Auditorio openqube': 'openQubeRoom',
+  'Auditorio openqube.io': 'openQubeRoom',
+  'Sala sysarmy, workshops': 'sysArmyRoom',
+}
 
 const main = async () => {
+  // Antes de realizar la lógica para obtener los datos, queremos obtener una estructura
+  // llamada nerdearlaEvents para ir almacenando los datos en esta
+  const nerdearlaEvents = {
+    days: {
+      one: {
+        cognizantRoom: [],
+        openQubeRoom: [],
+        sysArmyRoom: [],
+      },
+      two: {
+        cognizantRoom: [],
+        openQubeRoom: [],
+        sysArmyRoom: [],
+      },
+      three: {
+        cognizantRoom: [],
+        openQubeRoom: [],
+        sysArmyRoom: [],
+      },
+    },
+  }
+
+  // Mostremos un spinner
+  const spinner = ora('Cargando data de Nerdearla 🚀').start()
+
+  await delay(1000)
+
   // Obtenemos el HTML de nerder.la/agenda
-  const { data } = await axios.get('https://nerdear.la/agenda/');
+  const { data } = await axios.get('https://nerdear.la/agenda/')
 
   // Lo pasamos por Cheerio para poder obtener elementos del mismo
-  const $ = cheerio.load(data);
+  const $ = cheerio.load(data)
 
-  // Obtenemos cada una de las cajas largas que contienen los workshops/charlas
-  const days = $('ul.scheduleday_wrapper');
+  // Obtenemos cada una de las cajas largas que contienen los workshops/charlas que son elementos
+  const days = $('ul.scheduleday_wrapper')
 
-  // Pensar que estructura queremos lograr
-  // Por ej:
-  /*
-    {
-      days: {
-        one: {
-          cognizantRoom: {},
-          openQubeRoom: {},
-          sysArmyRoom: {}
-        },
-        two: {
-          cognizantRoom: {},
-          openQubeRoom: {},
-          sysArmyRoom: {}
-        },
-        three: {
-          cognizantRoom: {},
-          openQubeRoom: {},
-          sysArmyRoom: {}
-        },
-      }
-    }
-  */
+  // Iteramos sobre todas los  ul
+  days.each((index, ul) => {
+    // Obtenemos el titulo del ul que es por ej "Día 1 - Auditorio Cognizant/Despegar"
+    const title = $(ul)
+      .find('.scheduleday_title_content h4')
+      .text()
 
-  const titles = [];
-  days.each((_, element) => {
-    const title = $(element)
-      .find('.scheduleday_title')
-      .text();
-    titles.push(title);
-  });
-  console.log('TCL: main -> demo', titles);
-};
+    // Vamos a separar el día del lugar usando split()
+    const [day, room] = title.split(' - ')
 
-main();
+    // Obtenemos el subtitulo del ul que es por ej "17 de Octubre, charlas técnicas"
+    const subtitle = $(ul)
+      .find('.scheduleday_desc')
+      .text()
+
+    // Vamos a separar la fecha de la descripción usando split()
+    const [date, description] = subtitle.split(', ')
+
+    // Obtenemos todas los workshops/charlas que son elementos li
+    const cards = $(ul).find('li')
+
+    // Obtenemos todas los workshops/charlas que son elementos li
+    cards.each((index, li) => {
+      if (index === 0) return
+
+      const time = $(li)
+        .find('.session_start_time')
+        .text()
+
+      const title = $(li)
+        .find('.session_title')
+        .text()
+
+      const info = $(li)
+        .find('.session_speakers')
+        .text()
+
+      // Guardamos estos datos en un objeto
+      const talk = { time, title, info }
+
+      // Obtenemos los nombres de las keys que existen en nerdearlaEvents a partir del day y room
+      const parsedDay = DAYS[day]
+      const parsedRoom = ROOM_NAMES[room]
+
+      // Insertamos estos datos donde corresponda en nerdearlaEvents
+      nerdearlaEvents.days[parsedDay][parsedRoom].push(talk)
+    })
+  })
+
+  // Pausemos el spinner
+  spinner.stop()
+
+  // jclrz(nerdearlaEvents)
+  // console.log(JSON.stringify(dataParsed, null, 2))
+
+  // Ahora inicializemos la CLI
+
+  const nerdearlaCli = {
+    days: day => {
+      const nerdearlaEventsDay = nerdearlaEvents.days[day]
+
+      Object.entries(nerdearlaEventsDay).forEach(([room, talks]) => {
+        console.log(room)
+        console.log('\n')
+
+        talks.forEach(talk => {
+          console.log()
+        })
+      })
+    },
+  }
+
+  fire(nerdearlaCli)
+}
+
+main()
 
 /*
 
