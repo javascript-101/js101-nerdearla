@@ -2,8 +2,7 @@
 
 
 
-{% tabs %}
-{% tab title="Paso 1" %}
+
 {% hint style="success" %}
 ### 📚Conceptos
 
@@ -55,14 +54,8 @@ $ npm i -D nodemon
 
 Para poder utilizar las dependencias que instalamos anteriormente vamos a ir a nuestro archivo .js y  ****cargarlas:
 
-{% code-tabs %}
-{% code-tabs-item title="cli.js" %}
+
 ```javascript
 const axios = require('axios');
 const cheerio = require('cheerio');
 ```
-{% endcode-tabs-item %}
-{% endcode-tabs %}
-{% endtab %}
-{% endtabs %}
-
