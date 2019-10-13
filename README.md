@@ -1,16 +1,10 @@
----
-description: Armando una CLI con Node.js
----
-
 # Javascript101
 
-{% hint style="warning" %}
-🧙♂**Requisitos**
+## 🧙Requisitos
 
 * Editor de texto \(VScode, Sublime, Atom, Vim 👀, etc\)
 * Node instalado
 * Ganas de aprender 🤯
-{% endhint %}
 
 ## Dinámica
 
