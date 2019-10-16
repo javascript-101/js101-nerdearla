@@ -2,50 +2,31 @@ const axios = require('axios')
 const cheerio = require('cheerio')
 const ora = require('ora')
 const fire = require('js-fire')
-const boxen = require('boxen')
-
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const DAYS = {
-  'Día 1': 'one',
-  'Día 2': 'two',
-  'Día 3': 'three',
+  one: 'Día 1',
+  two: 'Día 2',
+  three: 'Día 3',
 }
 
 const ROOM_NAMES = {
-  'Auditorio Cognizant/Despegar': 'cognizantRoom',
-  'Auditorio openqube': 'openQubeRoom',
-  'Auditorio openqube.io': 'openQubeRoom',
-  'Sala sysarmy, workshops': 'sysArmyRoom',
+  cognizantRoom: 'Auditorio Cognizant/Despegar',
+  openQubeRoom: 'Auditorio openqube',
+  sysArmyRoom: 'Sala sysarmy, workshops',
+}
+
+const TALK_TYPE = {
+  'charlas técnicas': 'tecnica',
+  'rH (menos recursos': 'rrhh',
+  workshop: 'workshop',
 }
 
 const main = async () => {
-  // Antes de realizar la lógica para obtener los datos, queremos obtener una estructura
-  // llamada nerdearlaEvents para ir almacenando los datos en esta
-  const nerdearlaEvents = {
-    days: {
-      one: {
-        cognizantRoom: [],
-        openQubeRoom: [],
-        sysArmyRoom: [],
-      },
-      two: {
-        cognizantRoom: [],
-        openQubeRoom: [],
-        sysArmyRoom: [],
-      },
-      three: {
-        cognizantRoom: [],
-        openQubeRoom: [],
-        sysArmyRoom: [],
-      },
-    },
-  }
+  // Creamos un array nerdearlaEvents para ir almacenando todos en este
+  const nerdearlaEvents = []
 
   // Mostremos un spinner
   const spinner = ora('Cargando data de Nerdearla 🚀').start()
-
-  await delay(1000)
 
   // Obtenemos el HTML de nerder.la/agenda
   const { data } = await axios.get('https://nerdear.la/agenda/')
@@ -72,7 +53,7 @@ const main = async () => {
       .text()
 
     // Vamos a separar la fecha de la descripción usando split()
-    const [date, description] = subtitle.split(', ')
+    const [date, description = ''] = subtitle.split(', ')
 
     // Obtenemos todas los workshops/charlas que son elementos li
     const cards = $(ul).find('li')
@@ -93,89 +74,41 @@ const main = async () => {
         .find('.session_speakers')
         .text()
 
-      // Guardamos estos datos en un objeto
-      const talk = { time, title, info }
+      // Obtengamos el tipo de charla: técnica, rh, o workshop (este puede estar en el room (workshops) o bien en description)
+      const type = room === ROOM_NAMES.sysArmyRoom ? TALK_TYPE.workshop : TALK_TYPE[description]
 
-      // Obtenemos los nombres de las keys que existen en nerdearlaEvents a partir del day y room
-      const parsedDay = DAYS[day]
-      const parsedRoom = ROOM_NAMES[room]
+      // Guardamos estos datos en un objeto + el day, room, date y description que viven por fuera de esta función
+      const talk = { title, type, time, info, day, room, date }
 
-      // Insertamos estos datos donde corresponda en nerdearlaEvents
-      nerdearlaEvents.days[parsedDay][parsedRoom].push(talk)
+      // Insertamos estos datos en el array nerdearlaEvents
+      nerdearlaEvents.push(talk)
     })
   })
 
   // Pausemos el spinner
   spinner.stop()
 
-  // jclrz(nerdearlaEvents)
-  // console.log(JSON.stringify(dataParsed, null, 2))
-
-  // Ahora inicializemos la CLI
-
+  // Ahora creamos el objeto de configuración para la CLI
   const nerdearlaCli = {
+    // Podemos pedir a la CLI por los eventos en un día en particular: one, two, three
     days: day => {
-      const nerdearlaEventsDay = nerdearlaEvents.days[day]
+      const parsedDay = DAYS[day]
+      const nerdearlaTalksByDay = nerdearlaEvents.filter(event => event.day === parsedDay)
 
-      Object.entries(nerdearlaEventsDay).forEach(([room, talks]) => {
-        console.log(room)
-        console.log('\n')
+      if (!nerdearlaTalksByDay.length) return console.log('No hay charlas para tal día')
+      nerdearlaTalksByDay.forEach(event => console.log(event))
+    },
+    // Podemos pedirle a la CLI por un tipo de charla en particular: tecnica, rrhh, o workshop
+    talks: type => {
+      const nerdearlaTalksByType = nerdearlaEvents.filter(event => event.type === type)
 
-        talks.forEach(talk => {
-          console.log()
-        })
-      })
+      if (!nerdearlaTalksByType.length) return console.log('No hay charlas de tal tipo')
+      nerdearlaTalksByType.forEach(event => console.log(event))
     },
   }
 
+  // Inicializamos la CLI
   fire(nerdearlaCli)
 }
 
 main()
-
-/*
-1. Inicializemos nuestro proyecto con npm init -y
-2. Agreguemos como dependencia a axios para poder hacer un request GET
-   y obtener la página de Nerdearla.
-3. Agreguemos como dependencia cheerio con npm install cheerio
-   Que nos permitirá obtener elementos con una API similar a jQuery.
-4. Agreguemos como dependencia de desarrollador a nodemon, npm install -D nodemon
-   Para estar escuchando cambios en nuestro JS y volver a ejecutar Node.js sobre el mismo
-5. Hagamos require de axios y cheerio
-6. Creemos una función main para correr nuestra cli principal
-7. Vamos a hacer un GET con axios para obtener el HTML de la agenda de nerdearla que vive en https://nerdear.la/agenda/
-8. Ahora que ya tenemos el HTML debemos cargarlo a cheerio, usando el método .load()
-9.
-*/
-
-/*
-
-1. Falta agregar una opción UI para correr enquirer
-2. Falta
-3. Falta integración con gmail (con alguna lib)
-3. Falta poder publicarlo en npm (con np)
-
-
-----
-
-Otras libs: js-fire pkg
-
-CLI: nerdearla-cli
-1. Spinner cargando datos de nerdear.la
-2. Mostrar opciones con la CLI
-3. Selecciona uno de los 3 días
-4. Por ej selcciono dia uno
-5. Elegir por un lado si visualizar las charlas o bien los workshops
-6. Por ej selecciono workshops
-7. Mostramos la lista de todos los workshops
-8. Selecciona el de JS101
-9. Integración alguna integración con alguna API, por ej Google Calendar
-Agendar ese workshop
-
-CLI:
-nerdearla-cli --workshops // por ej eso me lista todos los workshops ordenado cronologicamente
-nerdearla-cli --talks // por ej me lista todas las charlas ordenadas cronologicamente
-nerdearla-cli --id 1843 // mostramos toda la info de esa charla/workshop
-nerdearla-cli --day one // mostramos toda las las charlas/workshops de ese día
-
-*/
