@@ -53,7 +53,7 @@ const main = async () => {
       .text()
 
     // Vamos a separar la fecha de la descripción usando split()
-    const [date, description = ''] = subtitle.split(', ')
+    const [date, description = 'No description'] = subtitle.split(', ')
 
     // Obtenemos todas los workshops/charlas que son elementos li
     const cards = $(ul).find('li')
@@ -96,14 +96,14 @@ const main = async () => {
       const nerdearlaTalksByDay = nerdearlaEvents.filter(event => event.day === parsedDay)
 
       if (!nerdearlaTalksByDay.length) return console.log('No hay charlas para tal día')
-      nerdearlaTalksByDay.forEach(event => console.log(event))
+      console.table(nerdearlaTalksByDay)
     },
     // Podemos pedirle a la CLI por un tipo de charla en particular: tecnica, rrhh, o workshop
     talks: type => {
       const nerdearlaTalksByType = nerdearlaEvents.filter(event => event.type === type)
 
       if (!nerdearlaTalksByType.length) return console.log('No hay charlas de tal tipo')
-      nerdearlaTalksByType.forEach(event => console.log(event))
+      console.table(nerdearlaTalksByType)
     },
   }
 
