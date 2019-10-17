@@ -62,6 +62,11 @@ const main = async () => {
     cards.each((index, li) => {
       if (index === 0) return
 
+      const id = $(li)
+        .find('.session_content_wrapper')
+        .attr('data-expandid')
+        .replace('excerpt_', '')
+
       const time = $(li)
         .find('.session_start_time')
         .text()
