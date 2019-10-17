@@ -1,3 +1,15 @@
+/*
+  Agenda:
+    1. Introducción de JS101
+    2. Live coding scrapping de DevDay (1 hora)
+    3. Codeo de CLI con documentación + ayuda de mentores (2 horas)
+    4. Live coding de toda la CLI (opcional: ultima media hora)
+
+  Links:
+    - https://js101.gitbook.io/javascript101-1/
+    - https://github.com/javascript-101/js101-nerdearla/blob/master/cli.js
+*/
+
 const axios = require('axios')
 const cheerio = require('cheerio')
 const ora = require('ora')
