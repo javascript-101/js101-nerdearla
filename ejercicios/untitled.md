@@ -39,17 +39,29 @@ Para entender un poco más acerca de esto te recomendamos que leas la documentac
 $ npm i axios
 ```
 
+{% hint style="info" %}
+**🔎**[**https://www.npmjs.com/package/axios**](https://www.npmjs.com/package/axios)\*\*\*\*
+{% endhint %}
+
 * Vamos a necesitar [**cheerio**](https://www.npmjs.com/package/cheerio) para iniciar con nuestro scraping y obtener elementos de manera similar que lo hacemos con jQuery.
 
 ```bash
 $ npm i cheerio
 ```
 
+{% hint style="info" %}
+🔎[**https://www.npmjs.com/package/cheerio**](https://www.npmjs.com/package/cheerio)\*\*\*\*
+{% endhint %}
+
 * Instalemos también [**nodemon**](https://www.npmjs.com/package/nodemon) _\*\*_como dependencia de desarrollador para estar escuchando los cambios en nuestro JS y volver a ejecutar Node.js sobre el mismo
 
 ```bash
 $ npm i -D nodemon
 ```
+
+{% hint style="info" %}
+🔎[**https://www.npmjs.com/package/nodemon**](https://www.npmjs.com/package/nodemon)\*\*\*\*
+{% endhint %}
 
 ## Paso 1
 
