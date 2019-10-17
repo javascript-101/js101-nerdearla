@@ -5,9 +5,15 @@
     3. Codeo de CLI con documentación + ayuda de mentores (2 horas)
     4. Live coding de toda la CLI (opcional: ultima media hora)
 
+  Wi-Fi:
+    - ID: Nerdearla Workshops
+    - Password: agarralapala
+
   Links:
-    - https://js101.gitbook.io/javascript101-1/
-    - https://github.com/javascript-101/js101-nerdearla/blob/master/cli.js
+    - Gitbook: http://bit.ly/js101nerdearla
+
+  Requisitos:
+    - Node.js: https://nodejs.org
 */
 
 const axios = require('axios')
