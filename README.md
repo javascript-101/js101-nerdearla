@@ -29,15 +29,3 @@ description: Armando una CLI con Node.js
 * Cómo utilizar [_**axios**_](https://github.com/axios/axios)_._
 * Cómo utilizar [**cheerio**](https://cheerio.js.org/) ****para [_**scraping**_](https://www.freecodecamp.org/news/the-ultimate-guide-to-web-scraping-with-node-js-daa2027dcd3/)_._
 
-
-
-
-
-
-
-
-
-
-
-
-
